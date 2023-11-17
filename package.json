@@ -1,4 +1,21 @@
 {
+  "name": "cypress-playground",
+  "version": "1.0.0",
+  "main": "cypress.config.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Valencia2019/cypress-playground.git"
+  },
+  "author": "Valencia M",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Valencia2019/cypress-playground/issues"
+  },
+  "homepage": "https://github.com/Valencia2019/cypress-playground#readme",
+  "description": "",
   "devDependencies": {
     "cypress": "^13.5.1"
   },
