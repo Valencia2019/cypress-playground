@@ -14,7 +14,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
-          working-directory: e2e
+          spec: cypress/accessibility/*.js
   Cypress-Accessibility:
     runs-on: ubuntu-22.04
     steps:
@@ -24,4 +24,4 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
-          working-directory: accessibility
+          spec: cypress/e2e/*.feature
