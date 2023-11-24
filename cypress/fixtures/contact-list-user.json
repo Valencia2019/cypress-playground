@@ -1,0 +1,10 @@
+{
+  "user": {
+    "_id": "",
+    "firstName": "Valencia",
+    "lastName": "Test",
+    "email": "Valencia@fake.com",
+    "password": ""
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDhiMmRiMWFkZDI2OTE3OTFjMDRjODgiLCJpYXQiOjE2MTk3MzM5Mzd9.06wN8dRBLkFiS_m2XdY6h4oLx3nMeupHvv-3C2AEKlY"
+}
