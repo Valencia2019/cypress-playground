@@ -1,13 +1,11 @@
 //This only tests the contact list pages that are available without being logged in
 var email, password;
-describe('Contact List App Accessibility checks Not Logged in', () => {
+
+describe('Contact List App Accessibility checks Logged in', () => {
   before(() => {
-    cy.fixture('contact-list-user').then((user) => {
-      cy.log("Before")
-      password = cy.generatePassword()
-      cy.log("password is " + password)
-      email = user.email
-      cy.addUser(user.firstName, user.lastName, user.email, password)
+    cy.fixture('contact-list-user').then((contact) => {
+      email = contact.user.email
+      password = contact.user.password
     })
   })
     beforeEach(() => {
@@ -31,9 +29,9 @@ describe('Contact List App Accessibility checks Not Logged in', () => {
       cy.checkA11y(null, null, null, true)
     })
 
-    after(() => {
-      cy.fixture('contact-list-user').then((token) => {
-        cy.deleteUser(token)
+/*     after(() => {
+      cy.fixture('contact-list-user').then((contact) => {
+        cy.deleteUser(contact.token)
       })
-    })
+    }) */
   })
