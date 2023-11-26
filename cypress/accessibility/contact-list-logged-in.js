@@ -29,6 +29,8 @@ describe('Contact List App Accessibility checks Logged in', () => {
       cy.checkA11y(null, null, null, true)
     })
 
+//this function would delete the contact that is created, but I deleted
+//that and commented out this after hook. Will work on this in another branch.
 /*     after(() => {
       cy.fixture('contact-list-user').then((contact) => {
         cy.deleteUser(contact.token)
