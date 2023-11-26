@@ -8,12 +8,11 @@ async function setupNodeEvents(on, config) {
   // This is required for the preprocessor to be able to generate JSON reports after each run, and more,
   await addCucumberPreprocessorPlugin(on, config);
 
-  on(
-    "file:preprocessor",
+  on("file:preprocessor",
     webpack({
       webpackOptions: {
         resolve: {
-          extensions: [".ts", ".js"],
+          extensions: [".js"],
         },
         module: {
           rules: [
@@ -30,7 +29,7 @@ async function setupNodeEvents(on, config) {
         },
       },
     })
-  );
+);
 
   // Make sure to return the config object as it might have been modified by the plugin.
   return config;
@@ -39,7 +38,7 @@ async function setupNodeEvents(on, config) {
 module.exports = defineConfig({
   e2e: {
     baseUrl: "https://thinking-tester-contact-list.herokuapp.com/",
-    specPattern: "**/*.feature",
+    specPattern: ["**/*.feature", "**/accessibility/*.js"],
     setupNodeEvents,
   },
 });

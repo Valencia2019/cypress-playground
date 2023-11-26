@@ -1,0 +1,10 @@
+{
+  "user": {
+    "_id": "",
+    "firstName": "Valencia",
+    "lastName": "Test",
+    "email": "Valencia@fake.com",
+    "password": "testtest"
+  },
+  "token": ""
+}
