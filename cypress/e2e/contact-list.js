@@ -1,7 +1,7 @@
 const { When, Then } = require("@badeball/cypress-cucumber-preprocessor");
 
 When("I visit the Contact List App site", () => {
-  cy.visit("https://thinking-tester-contact-list.herokuapp.com/");
+  cy.visit("/");
 });
 
 Then("I should see the Contact List App header", () => {

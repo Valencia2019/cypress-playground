@@ -17,10 +17,10 @@
   "homepage": "https://github.com/Valencia2019/cypress-playground#readme",
   "description": "",
   "devDependencies": {
-    "cypress": "^13.5.1"
+    "cypress": "^14.5.1"
   },
   "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^19.1.1",
+    "@badeball/cypress-cucumber-preprocessor": "^22.2.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@cypress/webpack-preprocessor": "^6.0.0",
     "cypress-axe": "^1.5.0"
