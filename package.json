@@ -17,6 +17,7 @@
   "homepage": "https://github.com/Valencia2019/cypress-playground#readme",
   "description": "",
   "devDependencies": {
+    "axios": "^1.10.0",
     "cypress": "^13.5.1"
   },
   "dependencies": {

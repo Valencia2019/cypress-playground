@@ -1,7 +1,7 @@
 //This only tests the contact list pages that are available without being logged in
 describe('Contact List App Accessibility checks Not Logged in', () => {
     beforeEach(() => {
-      cy.visit('https://thinking-tester-contact-list.herokuapp.com/')
+      cy.visit('/')
     })
   
     it('A11y check of the Login Page', () => {

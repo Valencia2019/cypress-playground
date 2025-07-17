@@ -3,13 +3,13 @@ var email, password;
 
 describe('Contact List App Accessibility checks Logged in', () => {
   before(() => {
-    cy.fixture('contact-list-user').then((contact) => {
-      email = contact.user.email
-      password = contact.user.password
+    cy.fixture('contact-list-users').then((users) => {
+      email = users[2].email
+      password = users[2].password
     })
   })
     beforeEach(() => {
-      cy.visit('https://thinking-tester-contact-list.herokuapp.com/')
+      cy.visit('/')
     })
   
     it('A11y check of the Contact List Page', () => {
@@ -32,7 +32,7 @@ describe('Contact List App Accessibility checks Logged in', () => {
 //this function would delete the contact that is created, but I deleted
 //that and commented out this after hook. Will work on this in another branch.
 /*     after(() => {
-      cy.fixture('contact-list-user').then((contact) => {
+      cy.fixture('contact-list-users').then((contact) => {
         cy.deleteUser(contact.token)
       })
     }) */
