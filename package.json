@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "cypress.config.js",
   "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:run:axe": "cypress run --spec 'cypress/accessibility/**/*.js'",
+    "cy:run:e2e": "cypress run --spec 'cypress/e2e/**/*.feature'",
     "test": "mocha"
   },
   "repository": {

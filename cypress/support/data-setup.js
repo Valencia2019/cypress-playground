@@ -3,29 +3,32 @@ const fs = require('fs');
 const { generatePassword } = require('./utils');
 
 /**
- * Deletes all users with a token
- * @param {array} users - array of users with tokens
+ * Checks if the users are valid and logs them in
+ * Then stores each user's token
+ * @param {array} users - array of users
  */
-const deleteUsers = (users) => {
+
+const checkValidUsers = (users) => {
   users.forEach((user, index) => {
-    if (user.token) {
-      console.log(`Deleting user ${user.firstName} ${user.lastName}`);
-      axios.delete('https://thinking-tester-contact-list.herokuapp.com/users/me', {
-        headers: { Authorization: `Bearer ${user.token}` }
-      }).then((response) => {
-        if (response.status === 200) {
-          console.log(`Deleted user ${user.firstName} ${user.lastName}`);
-          users[index].token = "";
-          fs.writeFileSync('cypress/fixtures/contact-list-users.json', JSON.stringify(users));
-        } else if (response.status === 401 || response.status === 404 || response.status === 400) {
-          console.log(`User ${user.firstName} ${user.lastName} already deleted`);
-          users[index].token = "";
-          fs.writeFileSync('cypress/fixtures/contact-list-users.json', JSON.stringify(users));
-        } else {
-          console.log(`Failed to delete user ${user.firstName} ${user.lastName}`);
-        }
-      });
-    }
+      console.log(`Logging in user ${user.firstName} ${user.lastName}`);
+      axios.post('https://thinking-tester-contact-list.herokuapp.com/users/login', { "email": user.email, "password": user.password })
+        .then((response) => {
+          if (response.data.token) {
+            console.log(`Logged in user ${user.firstName} ${user.lastName}`);
+            users[index].token = response.data.token;
+            fs.writeFileSync('cypress/fixtures/contact-list-users.json', JSON.stringify(users));
+          } else {
+            throw new Error(`Failed to login user. Status code ${response.status}`);
+          }
+        })
+        .catch((error) => {
+          if (error.response.status === 400) {
+            console.log('Failed to login user. Bad request');
+          } else {
+            console.log(`an error occurred while logging in user: ${error}`);
+          }
+        });
+    
   });
 }
 
@@ -105,7 +108,7 @@ const dataSetup = () => {
   const users = JSON.parse(fs.readFileSync(userFilePath, 'utf8'));
   const contacts = JSON.parse(fs.readFileSync(contactFilePath, 'utf8'));
 
-  deleteUsers(users);
+  checkValidUsers(users);
   generatePasswords(users).then(() => {
     //update the user file
     fs.writeFileSync(userFilePath, JSON.stringify(users));
