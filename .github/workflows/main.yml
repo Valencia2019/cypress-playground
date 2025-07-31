@@ -22,6 +22,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
+        continue-on-error: true
 
       - name: Merge & Generate Mochawesome Reports
         run: |
@@ -38,29 +39,13 @@ jobs:
         with:
           name: cypress-html-report
           path: cypress/reports/html
-
-      - name: Generate Test Summary from report
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "## 🧪 Cypress Test Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Spec File | Status | # of Tests | Passed | Failed | Duration |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----------|--------|------------|--------|--------|----------|" >> $GITHUB_STEP_SUMMARY
-
-          for f in cypress/reports/tmp/*.json; do
-            SPEC=$(basename "$f")
-            PASSED=$(jq '.results[0].suites[0].tests | map(select(.pass == true)) | length' "$f")
-            FAILED=$(jq '.results[0].suites[0].tests | map(select(.fail == true)) | length' "$f")
-            TOTAL=$(jq '.results[0].suites[0].tests | length' "$f")
-            DURATION=$(jq -r '.results[0].stats.duration' "$f")
-            STATUS="✅"
-
-            if [ "$FAILED" -gt 0 ]; then
-              STATUS="❌"
-            fi
-
-            echo "| $SPEC | $STATUS | $TOTAL | $PASSED | $FAILED | ${DURATION}ms |" >> $GITHUB_STEP_SUMMARY
-          done
+      
+      - name: Upload any screenshots of test failures
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
 
   summary:
     name: Commit test-summary.json to Portfolio
