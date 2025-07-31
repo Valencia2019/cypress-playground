@@ -5,9 +5,9 @@ When("I visit the Contact List App site", () => {
 });
 
 When("I login to the Contact List App", () => {
-    cy.fixture("contact-list-users").then((users) => {
-      cy.get("#email").type(users[0].email);
-      cy.get("#password").type(users[0].password);
+    cy.fixture("primary-user").then((user) => {
+      cy.get("#email").type(user.email);
+      cy.get("#password").type(user.password);
       cy.get("#submit").click();
     });
 });
@@ -24,7 +24,7 @@ Then("I should see the Add Contact header", () => {
     cy.get("h1").should("have.text", "Add Contact");
 });
 
-When("I enter contact {int} details", (contactIndex) => {
+When("I enter contact {int} contact details", (contactIndex) => {
     const index = contactIndex - 1;
     cy.fixture("contact-list-contacts").then((contacts) => {
       cy.get("#firstName").type(contacts[index].firstName);
@@ -42,17 +42,16 @@ When("I enter contact {int} details", (contactIndex) => {
 });
 
 Then("I should see contact {int} contact details", (contactIndex) => {
-    const index = contactIndex - 1;
     cy.fixture("contact-list-contacts").then((contacts) => {
-      cy.get("#firstName").should("have.value", contacts[index].firstName);
-      cy.get("#lastName").should("have.value", contacts[index].lastName);
-      cy.get("#email").should("have.value", contacts[index].email);
-      cy.get("#phone").should("have.value", contacts[index].phone);
-      cy.get("#street1").should("have.value", contacts[index].street1);
-      cy.get("#street2").should("have.value", contacts[index].street2);
-      cy.get("#city").should("have.value", contacts[index].city);
-      cy.get("#stateProvince").should("have.value", contacts[index].stateProvince);
-      cy.get("#postalCode").should("have.value", contacts[index].postalCode);
-      cy.get("#country").should("have.value", contacts[index].country);
+        const contact = contacts[contactIndex - 1];
+        cy.get("#myTable").find("tr").contains("td", contact._id).parent("tr").within(() => {
+            cy.get("td").eq(1).should("have.text", `${contact.firstName} ${contact.lastName}`);
+            cy.get("td").eq(2).should("have.text", contact.birthdate);
+            cy.get("td").eq(3).should("have.text", contact.email);
+            cy.get("td").eq(4).should("have.text", contact.phone);
+            cy.get("td").eq(5).should("have.text", `${contact.street1} ${contact.street2}`);
+            cy.get("td").eq(6).should("have.text", `${contact.city} ${contact.stateProvince} ${contact.postalCode}`);
+            cy.get("td").eq(7).should("have.text", contact.country);
+        });
     });
 });

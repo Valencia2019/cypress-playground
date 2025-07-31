@@ -3,9 +3,9 @@ var email, password;
 
 describe('Contact List App Accessibility checks Logged in', () => {
   before(() => {
-    cy.fixture('contact-list-users').then((users) => {
-      email = users[2].email
-      password = users[2].password
+    cy.fixture('primary-user').then((user) => {
+      email = user.email
+      password = user.password
     })
   })
     beforeEach(() => {
@@ -16,6 +16,7 @@ describe('Contact List App Accessibility checks Logged in', () => {
       cy.get("#email").type(email)
       cy.get("#password").type(password)
       cy.get("#submit").click()
+      cy.url().should('include', 'contactList')
       cy.injectAxe()
       cy.checkA11y(null, null, null, true)
     })
@@ -25,15 +26,9 @@ describe('Contact List App Accessibility checks Logged in', () => {
       cy.get("#password").type(password)
       cy.get("#submit").click()
       cy.get("#add-contact").click()
+      cy.url().should('include', 'addContact')
       cy.injectAxe()
       cy.checkA11y(null, null, null, true)
     })
 
-//this function would delete the contact that is created, but I deleted
-//that and commented out this after hook. Will work on this in another branch.
-/*     after(() => {
-      cy.fixture('contact-list-users').then((contact) => {
-        cy.deleteUser(contact.token)
-      })
-    }) */
   })
