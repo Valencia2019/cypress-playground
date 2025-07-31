@@ -12,8 +12,8 @@ When("I login to the Contact List App", () => {
     });
 });
 
-Then("I should see the Contact List App header", () => {
-    cy.get("h1").should("have.text", "Contact List App");
+Then("I should see the Contact List header", () => {
+    cy.get("h1").should("have.text", "Contact List");
 });
 
 When("I click the add contact button", () => {
