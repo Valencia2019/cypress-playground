@@ -1,5 +1,6 @@
 [
   {
+    "_id": "688ae6a91bd5550015ea98b0",
     "firstName": "John",
     "lastName": "Doe",
     "birthdate": "1970-01-01",
@@ -10,8 +11,12 @@
     "city": "Anytown",
     "stateProvince": "KS",
     "postalCode": "12345",
-    "country": "USA"
-  }, {
+    "country": "USA",
+    "owner": "687987f7bb3b9900157f070d",
+    "__v": 0
+  },
+  {
+    "_id": "688ae6a9ad958c001573f156",
     "firstName": "Jane",
     "lastName": "Doe",
     "birthdate": "1970-01-01",
@@ -22,18 +27,8 @@
     "city": "Anytown",
     "stateProvince": "KS",
     "postalCode": "12345",
-    "country": "USA"
-  }, {
-    "firstName": "Bob",
-    "lastName": "Smith",
-    "birthdate": "1970-01-01",
-    "email": "bsmith@fake.com",
-    "phone": "8005555555",
-    "street1": "1 Main St.",
-    "street2": "Apartment A",
-    "city": "Anytown",
-    "stateProvince": "KS",
-    "postalCode": "12345",
-    "country": "USA"
+    "country": "USA",
+    "owner": "687987f7bb3b9900157f070d",
+    "__v": 0
   }
 ]

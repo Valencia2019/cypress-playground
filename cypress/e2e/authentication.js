@@ -17,37 +17,48 @@ When("I click the sign up button", () => {
   });
 
   When("I enter my details and click the submit button", () => {
-    cy.fixture("contact-list-users").then((users) => {
-      cy.get("#firstName").type(users[0].firstName);
-      cy.get("#lastName").type(users[0].lastName);
-      cy.get("#email").type(users[0].email);
-      cy.get("#password").type(users[0].password);
-      cy.get("#submit").click();
-    });
-    //intercept page call to contacts and then copy the token from the cookie
-      cy.intercept("GET", "https://thinking-tester-contact-list.herokuapp.com/contacts").as("contacts");
-      cy.wait("@contacts");
-      cy.getCookie("token").should("exist");
-      //write the token to to the user object in the fixture
-      cy.fixture("contact-list-users").then((users) => {
-        users[0].token = cy.getCookie("token");
+  cy.fixture("contact-list-users").then((users) => {
+    // Fill out the form
+    cy.get("#firstName").type(users[0].firstName);
+    cy.get("#lastName").type(users[0].lastName);
+    cy.get("#email").type(users[0].email);
+    cy.get("#password").type(users[0].password);
+    cy.get("#submit").click();
+
+    // Wait for successful navigation
+    cy.url().should("include", "/contactList");
+
+    // Read the auth token from cookie and write it back to the fixture file
+    cy.getCookie("token").then((cookie) => {
+      if (cookie && cookie.value) {
+        users[0].token = cookie.value;
         cy.writeFile("cypress/fixtures/contact-list-users.json", users);
-      });
+        cy.log("✅ Token saved to fixture.");
+      } else {
+        cy.log("⚠️ No token found after signup.");
+      }
+    });
   });
+});
+
+
 
   Then("I should be signed up", () => {
     cy.get("h1").should("have.text", "Contact List App");
 
   });
 
-  Then("I should see the Login text", () => {
-    cy.get("p").should("include", "Log In");
+  Then("I should see the Login text and fields", () => {
+    cy.get("div.main-content").should("be.visible").and("contain", "Log In:");
+    cy.get("#email").should("be.visible");
+    cy.get("#password").should("be.visible");
+    cy.get("#submit").should("be.visible");
   });
 
-When("I enter my username and password and click the submit button", () => {
-    cy.fixture("contact-list-users").then((users) => {
-      cy.get("#email").type(users[0].email);
-      cy.get("#password").type(users[0].password);
+When("I enter a valid username and password and click the submit button", () => {
+    cy.fixture("primary-user").then((user) => {
+      cy.get("#email").type(user.email);
+      cy.get("#password").type(user.password);
       cy.get("#submit").click();
     });
   });

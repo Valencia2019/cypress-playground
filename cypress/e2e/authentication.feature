@@ -10,8 +10,8 @@ Feature: Contact List App Authentication
   Scenario: Sign into and then sign out of the Contact List App
     When I visit the Contact List App site
     Then I should see the Contact List App header
-    Then I should see the Login text
-    When I enter my username and password and click the submit button
+    Then I should see the Login text and fields
+    When I enter a valid username and password and click the submit button
     Then I should be logged in
     When I click the logout button
     Then I should be logged out

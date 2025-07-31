@@ -1,48 +1,94 @@
 const axios = require('axios');
 const fs = require('fs');
-const { generatePassword } = require('./utils');
 
 /**
- * Deletes all users with a token
- * @param {array} users - array of users with tokens
+ * Deletes all test users who have a token set
  */
-const deleteUsers = (users) => {
-  users.forEach((user, index) => {
+const deleteUsers = async (users) => {
+  for (const [index, user] of users.entries()) {
     if (user.token) {
-      console.log(`Deleting user ${user.firstName} ${user.lastName}`);
-      axios.delete('https://thinking-tester-contact-list.herokuapp.com/users/me', {
-        headers: { Authorization: `Bearer ${user.token}` }
-      }).then((response) => {
-        if (response.status === 200) {
-          console.log(`Deleted user ${user.firstName} ${user.lastName}`);
-          users[index].token = "";
-          fs.writeFileSync('cypress/fixtures/contact-list-users.json', JSON.stringify(users));
-        } else if (response.status === 401 || response.status === 404 || response.status === 400) {
-          console.log(`User ${user.firstName} ${user.lastName} already deleted`);
-          users[index].token = "";
-          fs.writeFileSync('cypress/fixtures/contact-list-users.json', JSON.stringify(users));
-        } else {
-          console.log(`Failed to delete user ${user.firstName} ${user.lastName}`);
-        }
-      });
-    }
-  });
-}
+      try {
+        console.log(`🗑️ Deleting user ${user.firstName} ${user.lastName}`);
+        const response = await axios.delete('https://thinking-tester-contact-list.herokuapp.com/users/me', {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
 
+        if (response.status === 200) {
+          console.log(`✅ Deleted user ${user.firstName} ${user.lastName}`);
+        } else {
+          console.log(`⚠️ Unexpected status for ${user.email}: ${response.status}`);
+        }
+      } catch (err) {
+        const status = err.response?.status;
+        if ([400, 401, 404].includes(status)) {
+          console.log(`ℹ️ User ${user.email} already deleted or unauthorized (${status})`);
+        } else {
+          console.error(`❌ Error deleting user ${user.email}: ${err.message}`);
+        }
+      }
+
+      // Clear token and update the file
+      users[index].token = "";
+    }
+  }
+
+  fs.writeFileSync('cypress/fixtures/contact-list-users.json', JSON.stringify(users, null, 2));
+};
 
 /**
- * Sets up the test data by deleting all users, creating a new user, and adding a contact for that user.
- * Ensures the system is in a known state before tests.
+ * Deletes all but the first contact for the primary user
  */
-const dataTeardown = () => {
-  const userFilePath = 'cypress/fixtures/contact-list-users.json';
-  
-  const users = JSON.parse(fs.readFileSync(userFilePath, 'utf8'));
+const cleanupPrimaryUserContacts = async () => {
+  const primaryUser = JSON.parse(fs.readFileSync('cypress/fixtures/primary-user.json', 'utf8'));
 
-  //deleteUsers(users);
-  console.log("skipping delete for now...");
-  
-  return null;
-}
+  if (!primaryUser || !primaryUser.token) {
+    console.warn('⚠️ No primary user or token found. Skipping contact cleanup.');
+    return;
+  }
+
+  try {
+    const response = await axios.get('https://thinking-tester-contact-list.herokuapp.com/contacts', {
+      headers: { Authorization: `Bearer ${primaryUser.token}` },
+    });
+
+    const contacts = response.data;
+
+    if (contacts.length <= 1) {
+      console.log('📇 Only one or no contacts found. Nothing to delete.');
+      return;
+    }
+
+    const contactsToDelete = contacts.slice(1); // keep the first one
+
+    for (const contact of contactsToDelete) {
+      try {
+        await axios.delete(
+          `https://thinking-tester-contact-list.herokuapp.com/contacts/${contact._id}`,
+          {
+            headers: { Authorization: `Bearer ${primaryUser.token}` },
+          }
+        );
+        console.log(`🗑️ Deleted contact ${contact.firstName} ${contact.lastName}`);
+      } catch (error) {
+        console.error(`❌ Failed to delete contact ${contact._id}: ${error.message}`);
+      }
+    }
+  } catch (error) {
+    console.error('❌ Failed to fetch primary user contacts:', error.message);
+  }
+};
+
+/**
+ * Full teardown routine
+ */
+const dataTeardown = async () => {
+  const testUsersPath = 'cypress/fixtures/contact-list-users.json';
+  const users = JSON.parse(fs.readFileSync(testUsersPath, 'utf8'));
+
+  console.log('⚙️ Starting data teardown...');
+  await deleteUsers(users);
+  await cleanupPrimaryUserContacts();
+  console.log('✅ Teardown complete.');
+};
 
 module.exports = dataTeardown;
