@@ -1,25 +1,82 @@
 name: Cypress Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ['**']
 
 jobs:
-  Cypress-Accessibility:
-    runs-on: ubuntu-22.04
+  test:
+    name: Run Cypress Tests
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: Cypress run
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress tests (e2e & a11y)
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
-          spec: cypress/accessibility/*.js
-  Cypress-e2e:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
+
+      - name: Merge & Generate Mochawesome Reports
+        run: |
+          npm run report:merge:axe
+          npm run report:generate:axe
+          npm run report:merge:e2e
+          npm run report:generate:e2e
+          npm run report:merge:all
+          npm run report:generate:all
+
+      - name: Upload full HTML report artifact
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
         with:
-          browser: chrome
-          spec: cypress/e2e/*.feature
+          name: cypress-html-report
+          path: cypress/reports/html
+
+      - name: Deploy report page (non-main branches)
+        if: github.ref != 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./cypress/reports/html
+
+  summary:
+    name: Commit test-summary.json to Portfolio
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Cypress Playground
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate test-summary.json
+        run: npm run report:summary
+
+      - name: Clone portfolio repo
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git clone https://github.com/Valencia2019/valencia-portfolio.git
+          cd valencia-portfolio
+          git switch main
+
+      - name: Copy summary to portfolio
+        run: |
+          cp test-summary.json valencia-portfolio/public/data/test-summary.json
+
+      - name: Commit and push
+        run: |
+          cd valencia-portfolio
+          git add public/data/test-summary.json
+          git commit -m "📊 Update test-summary.json from Cypress Playground [skip ci]" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.PORTFOLIO_TOKEN }}@github.com/Valencia2019/valencia-portfolio.git main

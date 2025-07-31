@@ -7,7 +7,20 @@
     "cy:run": "cypress run",
     "cy:run:axe": "cypress run --spec 'cypress/accessibility/**/*.js'",
     "cy:run:e2e": "cypress run --spec 'cypress/e2e/**/*.feature'",
-    "test": "mocha"
+    "report:merge:axe": "npx mochawesome-merge cypress/reports/axe/*.json --output cypress/reports/axe/merged-report.json",
+    "report:generate:axe": "marge cypress/reports/axe/merged-report.json -o cypress/reports/axe/html",
+    "report:merge:e2e": "npx mochawesome-merge cypress/reports/e2e/*.json --output cypress/reports/e2e/merged-report.json",
+    "report:generate:e2e": "marge cypress/reports/e2e/merged-report.json -o cypress/reports/e2e/html",
+    "report:merge:all": "npx mochawesome-merge cypress/reports/axe/merged-report.json cypress/reports/e2e/merged-report.json > cypress/reports/merged-report.json",
+    "report:generate:all": "marge cypress/reports/merged-report.json -f index.html -o cypress/reports/html --inline true",
+    "report:clean": "rimraf cypress/reports/*",
+    "test:full": "npm run report:clean && npm run cy:run",
+    "report:axe": "npm run report:merge:axe && npm run report:generate:axe",
+    "report:e2e": "npm run report:merge:e2e && npm run report:generate:e2e",
+    "report:all": "npm run report:merge:all && npm run report:generate:all",
+    "report:full": "npm run report:axe && npm run report:e2e && npm run report:all",
+
+    "report:summary": "node generate-summary.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +35,11 @@
   "description": "",
   "devDependencies": {
     "axios": "^1.10.0",
-    "cypress": "^13.5.1"
+    "cypress": "^13.5.1",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^5.0.0",
+    "mochawesome-report-generator": "^6.2.0",
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^19.1.1",
