@@ -1,0 +1,34 @@
+[
+  {
+    "_id": "",
+    "firstName": "Jeez",
+    "lastName": "Test",
+    "email": "jeez@fake.com",
+    "password": "$oFxERpDm",
+    "token": ""
+  },
+  {
+    "_id": "",
+    "firstName": "Valencia",
+    "lastName": "Test",
+    "email": "Valencia1@valencia.com",
+    "password": "M534oVYvX",
+    "token": ""
+  },
+  {
+    "_id": "",
+    "firstName": "Jim",
+    "lastName": "Test",
+    "email": "Jim1@valencia.com",
+    "password": "qIjKPQfNx",
+    "token": ""
+  },
+  {
+    "_id": "",
+    "firstName": "John",
+    "lastName": "Test",
+    "email": "John1@valencia.com",
+    "password": "DE(0AXec7",
+    "token": ""
+  }
+]
