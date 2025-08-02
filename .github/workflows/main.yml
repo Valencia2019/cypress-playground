@@ -71,6 +71,7 @@ jobs:
         with:
           repository: Valencia2019/valencia-portfolio
           token: ${{ secrets.PORTFOLIO_TOKEN }}
+          ref: main
           path: valencia-portfolio
 
       - name: Download test-summary.json artifact directly into portfolio
