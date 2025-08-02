@@ -41,16 +41,16 @@ jobs:
           name: cypress-html-report
           path: cypress/reports/html
 
-      - name: Generate test-summary.json
+      - name: Generate cypress-playground.json
         if: github.ref == 'refs/heads/main'
         run: npm run report:summary
 
-      - name: Upload test-summary.json artifact
+      - name: Upload cypress-playground.json artifact
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
-          name: test-summary
-          path: cypress/reports/test-summary.json
+          name: cypress-playground
+          path: cypress/reports/cypress-playground.json
 
       - name: Upload any screenshots of test failures
         if: failure()
@@ -74,17 +74,17 @@ jobs:
           ref: main
           path: Valencia2019.github.io
 
-      - name: Download test-summary.json artifact directly into portfolio
+      - name: Download cypress-playground.json artifact directly into portfolio
         uses: actions/download-artifact@v4
         with:
-          name: test-summary
-          path: Valencia2019.github.io/public/data
+          name: cypress-playground
+          path: Valencia2019.github.io/public/reports
 
       - name: Commit and push
         run: |
           cd Valencia2019.github.io
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add public/data/test-summary.json
-          git commit -m "📊 Update test-summary.json from Cypress Playground [skip ci]" || echo "No changes to commit"
+          git add public/reports/cypress-playground.json
+          git commit -m "📊 Update cypress-playground.json from Cypress Playground [skip ci]" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.PORTFOLIO_TOKEN }}@github.com/Valencia2019/Valencia2019.github.io.git main

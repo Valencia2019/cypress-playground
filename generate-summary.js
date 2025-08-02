@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const mochawesomeReportPath = path.join(__dirname, 'cypress/reports/merged-report.json');
-const outputPath = path.join(__dirname, 'cypress/reports/test-summary.json');
+const outputPath = path.join(__dirname, 'cypress/reports/cypress-playground.json');
 
 function extractSummary(report) {
   const { stats, results } = report;
@@ -34,8 +34,8 @@ try {
   const reportData = JSON.parse(fs.readFileSync(mochawesomeReportPath, 'utf-8'));
   const summary = extractSummary(reportData);
   fs.writeFileSync(outputPath, JSON.stringify(summary, null, 2));
-  console.log('✅ test-summary.json generated');
+  console.log('✅ cypress-playground.json generated');
 } catch (error) {
-  console.error('❌ Failed to generate test-summary.json:', error.message);
+  console.error('❌ Failed to generate cypress-playground.json:', error.message);
   process.exit(1);
 }
