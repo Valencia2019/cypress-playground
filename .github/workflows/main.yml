@@ -50,8 +50,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-summary
-          path: test-summary.json
-          
+          path: cypress/reports/test-summary.json
+
       - name: Upload any screenshots of test failures
         if: failure()
         uses: actions/upload-artifact@v4
@@ -66,12 +66,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download test-summary.json artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: test-summary
-          path: .
-
       - name: Checkout Portfolio Repo
         uses: actions/checkout@v4
         with:
@@ -79,9 +73,11 @@ jobs:
           token: ${{ secrets.PORTFOLIO_TOKEN }}
           path: valencia-portfolio
 
-      - name: Copy summary to portfolio
-        run: |
-          cp test-summary.json valencia-portfolio/public/data/test-summary.json
+      - name: Download test-summary.json artifact directly into portfolio
+        uses: actions/download-artifact@v4
+        with:
+          name: test-summary
+          path: valencia-portfolio/public/data
 
       - name: Commit and push
         run: |
